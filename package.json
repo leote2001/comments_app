@@ -15,6 +15,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "concurrently": "^9.1.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
@@ -31,7 +32,6 @@
     "@types/joi": "^17.2.2",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.2",
-    "cookie-parser": "^1.4.7",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.1.9",
     "typescript": "^5.7.2"
