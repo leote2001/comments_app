@@ -15,3 +15,7 @@ export interface ICommentController {
     profile(req: Request, res: Response, next: NextFunction): Promise<void>;
     delete(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
+export interface ILikeController {
+    getCommentsLikes(req: Request, res: Response, next: NextFunction): Promise<any>;
+    toggleLike(req: Request, res: Response, next: NextFunction): Promise<any>;
+}

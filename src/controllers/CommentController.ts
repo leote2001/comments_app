@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { likeModel } from "../model/likeModel";
 import { ICommentController } from "../interfaces";
 import { commentModel } from "../model/comment.model";
 import { userModel } from "../model/user.model";
@@ -21,6 +22,7 @@ export class CommentController implements ICommentController {
 
             res.render("index", { allComments, userData, currentPage: page, totalPages, errors: [], oldData: {} });
         } catch (err: any) {
+            console.error(err.message);
             next(err);
         }
     }
