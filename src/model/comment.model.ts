@@ -24,5 +24,5 @@ const commentSchema = new mongoose.Schema<Comment>({
     },
     {timestamps: true}
 );
-commentSchema.index({createdAt: 1}, {expireAfterSeconds: 3600});
+
 export const commentModel = mongoose.model<Comment>("Comment", commentSchema);
