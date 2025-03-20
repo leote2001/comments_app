@@ -29,7 +29,7 @@
         <input type="hidden" name="source" id="source" value="<%= source %>">
             <h2>Edit</h2>
             <div class="mb-3">
-                <textarea aria-describedby="commentAdvice" class="form-control" name="content" id="content" placeholder="Write something"><%= oldData && oldData.content ? oldData.content : comment.content %></textarea>
+                <textarea autofocus aria-describedby="commentAdvice" class="form-control" name="content" id="content" placeholder="Write something"><%= oldData && oldData.content ? oldData.content : comment.content %></textarea>
                 <div id="commentAdvice" class="form-text">Maximum length: 180 characters.</div>
             </div>
             <p id="p-length"></p>
@@ -45,6 +45,7 @@
     <button class="btn btn-primary" onclick="window.history.back()">Back</button>
         </main>
         <footer class="text-center text-muted">
+            <p>Developed by <a target="_blank" href="https://leosprogramador.portfolio-ls.online">Leonardo Sales (Leo S Programador)</a></p>
 <p>Copyright &copy;2025</p>
         </footer>
     </div>

@@ -32,7 +32,7 @@
                 <input type="hidden" name="source" id="source" value="index">
                 <h2>Create comment</h2>
                 <div class="mb-3">
-                    <textarea aria-describedby="commentAdvice" class="form-control" name="content" id="content"
+                    <textarea autofocus aria-describedby="commentAdvice" class="form-control" name="content" id="content"
                         placeholder="Write something"><%= oldData && oldData.content ? oldData.content : '' %></textarea>
                         <div id="commentAdvice" class="form-text">Maximum length: 180 characters.</div>
                 </div>
@@ -119,6 +119,7 @@
                             <%}%>
         </main>
         <footer class="text-center text-muted">
+            <p>Developed by <a target="_blank" href="https://leosprogramador.portfolio-ls.online">Leonardo Sales (Leo S Programador)</a></p>
             <p>Copyright &copy;2025</p>
         </footer>
     </div>
