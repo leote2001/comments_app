@@ -14,7 +14,8 @@
     <nav>
         <ul class="list-group">
             <li class="list-group-item"><a href="/">Home</a></li>
-            <li class="list-group-item"><a href="/profile">Profile</a></li>
+            <li class="list-group-item"><a href="/profile/">My profile</a></li>
+            <li class="list-group-item"><a href="/favorite/get-all/">My favorite users</a></li>
             <li class="list-group-item">
                 <form action="/auth/logout" method="post" style="display: inline;"><button class="btn btn-primary" type="submit">Logout</button>
                 </form>
@@ -28,9 +29,11 @@
         <input type="hidden" name="source" id="source" value="<%= source %>">
             <h2>Edit</h2>
             <div class="mb-3">
-                <textarea class="form-control" name="content" id="content" placeholder="Write something"><%= oldData && oldData.content ? oldData.content : comment.content %></textarea>
+                <textarea aria-describedby="commentAdvice" class="form-control" name="content" id="content" placeholder="Write something"><%= oldData && oldData.content ? oldData.content : comment.content %></textarea>
+                <div id="commentAdvice" class="form-text">Maximum length: 180 characters.</div>
             </div>
-            <button class="btn btn-primary" type="submit">Submit</button>
+            <p id="p-length"></p>
+            <button id="submitBtn" class="btn btn-primary" type="submit">Submit</button>
     </form>
     <% if (errors.length > 0) { %>
 <ul class="list-group">
@@ -45,6 +48,7 @@
 <p>Copyright &copy;2025</p>
         </footer>
     </div>
+    <script src="/commentLengthEditPage.js"></script>
 </body>
 
 </html>

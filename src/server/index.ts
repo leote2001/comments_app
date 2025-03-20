@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "../middleware/errorHandler";
 import { commentRouter } from "../routes/comment.router";
 import { likeRouter } from "../routes/like.router";
+import { favoriteUserRouter } from "../routes/favoriteUser.router";
+import { searchRouter } from "../routes/search.router";
 export const app: Express = express();
 
 app.use(express.json());
@@ -15,5 +17,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../../views"));
 app.use("/", commentRouter);
 app.use("/", likeRouter);
+app.use("/search", searchRouter);
 app.use("/auth", authRouter);
+app.use("/favorite", favoriteUserRouter);
 app.use(errorHandler);

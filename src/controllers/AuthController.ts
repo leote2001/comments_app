@@ -82,7 +82,9 @@ return;
 try {
 const {username, email, password } = req.body;
 console.log("datos del formulario");
-const userExists = await userModel.findOne({email});
+const userExists = await userModel.findOne({
+$or: [{email}, {username}]
+});
 if (userExists) {
     console.log("user already exists");
     const errors: string[] = ["User already exists"];

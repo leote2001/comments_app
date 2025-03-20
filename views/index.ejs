@@ -13,10 +13,12 @@
     <div class="container text-center">
         <header class="text-center">
             <h1>Comments</h1>
+            <%- include("./partials/search") %>
             <nav>
                 <ul class="list-group">
                     <li class="list-group-item"><a href="/">Home</a></li>
-                    <li class="list-group-item"><a href="/profile">Profile</a></li>
+                    <li class="list-group-item"><a href="/profile/">My profile</a></li>
+                    <li class="list-group-item"><a href="/favorite/get-all/">My favorite users</a></li>
                     <li class="list-group-item">
                         <form action="/auth/logout" method="post" style="display: inline;"><button
                                 class="btn btn-primary" type="submit">Logout</button>
@@ -30,10 +32,12 @@
                 <input type="hidden" name="source" id="source" value="index">
                 <h2>Create comment</h2>
                 <div class="mb-3">
-                    <textarea class="form-control" name="content" id="content"
+                    <textarea aria-describedby="commentAdvice" class="form-control" name="content" id="content"
                         placeholder="Write something"><%= oldData && oldData.content ? oldData.content : '' %></textarea>
+                        <div id="commentAdvice" class="form-text">Maximum length: 180 characters.</div>
                 </div>
-                <button class="btn btn-primary" type="submit">Submit</button>
+                <p id="p-length"></p>
+                <button id="submitBtn" disabled class="btn btn-primary" type="submit">Submit</button>
             </form>
             <% if (errors.length> 0) { %>
                 <ul class="list-group">
@@ -50,8 +54,22 @@
                             <% allComments.forEach(comment=> { %>
                                 <li class="list-group-item">
                                     <h3>
-                                        <%= comment.userId.username %>
+                                        <a href="/profile/<%= comment.userId._id %>"><%= comment.userId.username %></a>
                                     </h3>
+                                    <% if (comment.userId._id.toString() !== userData._id.toString()) { %>
+                                        <button data-favorite-id="<%= comment.userId._id %>"
+                                            class="btn btn-primary favoriteButton"></button>
+                                        <%}%>
+                                    
+                                    <% if (comment.userId._id.toString() !== comment.receiverId._id.toString()) { %>
+                                        <p>posted on</p>
+                                        <h4><a href="/profile/<%= comment.receiverId._id %>"><%= comment.receiverId.username %></a></h4>
+                                        <% if (comment.receiverId._id.toString() !== userData._id.toString()) { %>
+                                            <button data-favorite-id="<%= comment.userId._id %>"
+                                                class="btn btn-primary favoriteButton"></button>
+                                            <%}%>
+                                        
+                                    <%}%>
                                     <p>
                                         <%= comment.content%>
                                     </p>
@@ -60,15 +78,15 @@
                                     </p>
                                     <button class="btn btn-primary likeButton"
                                         data-comment-id="<%= comment._id %>"></button>
-                                    <% if (comment.userId._id.toString()===userData._id.toString()) { %>
+                                    <% if (comment.userId._id.toString() === userData._id.toString()) { %>
                                         <form action="/<%= comment._id %>/edit" style="display:inline;">
                                             <input type="hidden" name="source" id="source" value="index">
                                             <button class="btn btn-primary" type="submit">Edit</button>
                                         </form>
-                                        <form action="/delete" method="post" style="display: inline;">
+                                        <form class="deleteForm" style="display: inline;">
                                             <input type="hidden" name="commentId" id="commentId"
                                                 value="<%= comment._id%>">
-                                            <input type="hidden" name="source" id="source" value="profile">
+                                            <input type="hidden" name="source" id="source" value="index">
                                             <button class="btn btn-primary" type="submit">Delete</button>
                                         </form>
                                         <%}%>
@@ -105,6 +123,10 @@
         </footer>
     </div>
     <script src="/like.js"></script>
+    <script src="/text-toggle-favorite.js"></script>
+    <script src="/delete.js"></script>
+    <script src="/searchScript.js"></script>
+    <script src="/commentLength.js"></script>
 </body>
 
 </html>

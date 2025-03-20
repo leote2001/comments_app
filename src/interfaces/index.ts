@@ -13,9 +13,21 @@ export interface ICommentController {
     editForm(req: Request, res: Response, next: NextFunction): Promise<void>;
     edit(req: Request, res: Response, next: NextFunction): Promise<void>;
     profile(req: Request, res: Response, next: NextFunction): Promise<void>;
+    hidden(req: Request, res: Response, next: NextFunction): Promise<void>;
     delete(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
 export interface ILikeController {
     getCommentsLikes(req: Request, res: Response, next: NextFunction): Promise<any>;
     toggleLike(req: Request, res: Response, next: NextFunction): Promise<any>;
+}
+
+export interface IFavoriteUserController {
+    getAll(req: Request, res: Response, next: NextFunction): Promise<void>;
+    favoriteButtonText(req: Request, res: Response, next: NextFunction): Promise<any>;
+    toggleFavoriteUser(req: Request, res: Response, next: NextFunction): Promise<any>;
+    deleteFavoriteUser(req: Request, res: Response, next: NextFunction): Promise<void>;
+}
+
+export interface ISearchController {
+    search(req: Request, res: Response, next: NextFunction): Promise<any>;
 }

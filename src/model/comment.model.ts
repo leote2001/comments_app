@@ -7,10 +7,19 @@ const commentSchema = new mongoose.Schema<Comment>({
         required: true,
         ref: "User"
     },
+    receiverId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true 
+    },
     content: {
         type: String,
         required: true,
         maxlength: 180
+    },
+    hidden: {
+        type: Boolean, 
+        default: false
     }
     },
     {timestamps: true}

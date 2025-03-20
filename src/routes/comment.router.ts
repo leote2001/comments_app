@@ -13,6 +13,8 @@ commentRouter.get("/:commentId/edit", tokenMiddleware, commentController.editFor
 // Edit
 commentRouter.post("/edit", tokenMiddleware, commentController.edit);
 // Profile
-commentRouter.get("/profile", tokenMiddleware, commentController.profile);
+commentRouter.get("/profile/:userId?", tokenMiddleware, commentController.profile);
 // Delete
 commentRouter.post("/delete", tokenMiddleware, commentController.delete);
+// Hidden
+commentRouter.post("/hidden", tokenMiddleware, commentController.hidden);
