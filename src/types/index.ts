@@ -14,6 +14,7 @@ export type Comment = {
     hidden: boolean;
     createdAt: Date;
     repostOf: Schema.Types.ObjectId;
+    type: string;
 }
 
 export type Like = {

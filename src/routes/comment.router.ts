@@ -24,3 +24,5 @@ commentRouter.get("/get-repost-btn-text/:commentId", tokenMiddleware, commentCon
 commentRouter.post("/repost", tokenMiddleware, commentController.repost);
 // Get notifications
 commentRouter.get("/notifications", tokenMiddleware, commentController.getNotifications);
+// Get comment by id
+commentRouter.get("/comment/:commentId", tokenMiddleware, commentController.getCommentById);

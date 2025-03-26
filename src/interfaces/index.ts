@@ -18,6 +18,7 @@ export interface ICommentController {
     getRepostButtonsText(req: Request, res: Response, next: NextFunction): Promise<any>;
     repost(req: Request, res: Response, next: NextFunction): Promise<any>;
     getNotifications(req: Request, res: Response, next: NextFunction): Promise<void>;
+    getCommentById(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
 export interface ILikeController {
     getCommentsLikes(req: Request, res: Response, next: NextFunction): Promise<any>;

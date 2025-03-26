@@ -47,6 +47,7 @@
 <span><b><%= currentPage %></b></span>
 -
 <span><b><%= totalPages %></b></span>
+
 <% if (currentPage < totalPages) { %>
 <li class="page-item"><a class="page-link" href="/notifications?page=<%= currentPage + 1 %>">Next</a></li>
 <%}%>

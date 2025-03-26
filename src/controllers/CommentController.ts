@@ -73,10 +73,10 @@ export class CommentController implements ICommentController {
                 }
             }
             if (source === "index") {
-                await commentModel.create({ userId: (req as any).userId, receiverId: (req as any).userId, content });
+                await commentModel.create({ userId: (req as any).userId, receiverId: (req as any).userId, content, type: "new" });
                 await notificationModel.create({userId: (req as any).userId, receiverId: (req as any).userId, type: "new"});
             } else {
-                await commentModel.create({ userId: (req as any).userId, receiverId: source, content });
+                await commentModel.create({ userId: (req as any).userId, receiverId: source, content, type: "post on" });
                 await notificationModel.create({userId: (req as any).userId, receiverId: source, type: "post on"});
             }
 
@@ -193,7 +193,7 @@ return res.status(200).json({reposted});
             const existingComment = await commentModel.findOne({userId: (req as any).userId, repostOf: commentId});
             let reposted; 
             if (!existingComment) {
-                await commentModel.create({userId: (req as any).userId, receiverId: (req as any).userId, content, repostOf: commentId});
+                await commentModel.create({userId: (req as any).userId, receiverId: (req as any).userId, content, repostOf: commentId, type: "repost"});
                 await notificationModel.create({userId: (req as any).userId, receiverId: (req as any).userId, repostOf: commentId, type: "repost"});
                 reposted = true;
             } else {
@@ -238,5 +238,8 @@ return res.status(200).json({reposted});
         } catch (err: any) {
             next(err);
         }
+    }
+    async getCommentById(req: Request, res: Response, next: NextFunction): Promise<void> {
+
     }
 }

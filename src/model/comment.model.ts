@@ -24,6 +24,11 @@ const commentSchema = new mongoose.Schema<Comment>({
     repostOf: {
         type: Schema.Types.ObjectId,
         ref: "Comment"
+    },
+    type: {
+        type: String,
+        enum: ["new", "post on", "repost"],
+        required: true
     }
     },
     {timestamps: true}
