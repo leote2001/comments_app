@@ -1,17 +1,19 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-export type User = {
+type UserType = {
     username: string;
     email: string;
     password: string;
 }
+export type User = UserType & Document; 
 
 export type Comment = {
- userId: mongoose.Schema.Types.ObjectId;   
- receiverId: mongoose.Schema.Types.ObjectId;   
- content: string;
- hidden: boolean;
- createdAt: Date;
+    userId: mongoose.Schema.Types.ObjectId;
+    receiverId: mongoose.Schema.Types.ObjectId;
+    content: string;
+    hidden: boolean;
+    createdAt: Date;
+    repostOf: Schema.Types.ObjectId;
 }
 
 export type Like = {
@@ -21,5 +23,14 @@ export type Like = {
 
 export type FavoriteUser = {
     userId: Schema.Types.ObjectId;
+    favoriteId: Schema.Types.ObjectId;
+}
+
+export type Notification = {
+    userId: Schema.Types.ObjectId;
+    receiverId: Schema.Types.ObjectId;
+    repostOf: Schema.Types.ObjectId;
+    createdAt: Date;
+    type: string;
     favoriteId: Schema.Types.ObjectId;
 }

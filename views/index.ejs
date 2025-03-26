@@ -18,6 +18,7 @@
                 <ul class="list-group">
                     <li class="list-group-item"><a href="/">Home</a></li>
                     <li class="list-group-item"><a href="/profile/">My profile</a></li>
+                    <li class="list-group-item"><a href="/notifications">Notifications</a></li>
                     <li class="list-group-item"><a href="/favorite/get-all/">My favorite users</a></li>
                     <li class="list-group-item">
                         <form action="/auth/logout" method="post" style="display: inline;"><button
@@ -56,10 +57,20 @@
                                     <h3>
                                         <a href="/profile/<%= comment.userId._id %>"><%= comment.userId.username %></a>
                                     </h3>
+                                    
                                     <% if (comment.userId._id.toString() !== userData._id.toString()) { %>
                                         <button data-favorite-id="<%= comment.userId._id %>"
                                             class="btn btn-primary favoriteButton"></button>
                                         <%}%>
+                                        <% if (comment.repostOf) { %>
+                                            <p>reposted from</p>
+                                            <h4><a href="/profile/<%= comment.repostOf.userId._id %>"><%= comment.repostOf.userId.username %></a></h4>
+                                            <% if (comment.repostOf.userId._id.toString() !== userData._id.toString()) { %>
+                                            <button data-favorite-id="<%= comment.repostOf.userId._id %>"
+                                                class="btn btn-primary favoriteButton"></button>
+                                            <%}%>
+                                                                                <%}%>
+                                                                                
                                     
                                     <% if (comment.userId._id.toString() !== comment.receiverId._id.toString()) { %>
                                         <p>posted on</p>
@@ -79,10 +90,12 @@
                                     <button class="btn btn-primary likeButton"
                                         data-comment-id="<%= comment._id %>"></button>
                                     <% if (comment.userId._id.toString() === userData._id.toString()) { %>
+                                        <% if (!comment.repostOf) { %>
                                         <form action="/<%= comment._id %>/edit" style="display:inline;">
                                             <input type="hidden" name="source" id="source" value="index">
                                             <button class="btn btn-primary" type="submit">Edit</button>
                                         </form>
+                                    <%}%>
                                         <form class="deleteForm" style="display: inline;">
                                             <input type="hidden" name="commentId" id="commentId"
                                                 value="<%= comment._id%>">
@@ -90,9 +103,14 @@
                                             <button class="btn btn-primary" type="submit">Delete</button>
                                         </form>
                                         <%}%>
+                                        <% if (comment.userId._id.toString() !== userData._id.toString() || comment.receiverId._id.toString() !== userData._id.toString() && comment.repostOf && comment.repostOf.userId._id.toString() !== userData._id.toString()) { %>
+                                            <button data-comment-id="<%= comment._id %>" data-content="<%= comment.content %>" class="btn btn-primary btnRepost"></button>
+                                                                                    <%}%>
+                                                                                    
                                 </li>
                                 <%})%>
                         </ul>
+                        
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
                                 <% if (currentPage> 1) { %>
@@ -128,6 +146,7 @@
     <script src="/delete.js"></script>
     <script src="/searchScript.js"></script>
     <script src="/commentLength.js"></script>
+    <script src="/repostBtnText.js"></script>
 </body>
 
 </html>

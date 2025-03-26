@@ -18,7 +18,13 @@ const userSchema = new mongoose.Schema<User>({
         maxlength: 255
     }
 },
-{
-    timestamps: true
-});
+    {
+        timestamps: true
+    });
+userSchema.methods.toJSON = function () {
+    const userObject = this.toObject();
+    delete userObject.password;
+    return userObject;
+}
+
 export const userModel = mongoose.model("User", userSchema); 

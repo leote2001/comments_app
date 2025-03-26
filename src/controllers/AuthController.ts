@@ -23,12 +23,14 @@ export class AuthController implements IAuthController {
                 res.redirect("/");
                 return;
                 } catch (err: any) {
+                    console.log("error")
                     res.render("login", {errors: [], oldData: {}, num1, num2, result});
 return;
                 }
             }
             res.render("login", {errors: [], oldData: {}, num1, num2, result});
         } catch (err: any) {
+            console.log("error en login form")
             next(err);
         }
     }

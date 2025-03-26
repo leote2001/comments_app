@@ -3,6 +3,8 @@ import { likeModel } from "../model/likeModel";
 import { ICommentController } from "../interfaces";
 import { commentModel } from "../model/comment.model";
 import { userModel } from "../model/user.model";
+import { notificationModel } from "../model/notification.model";
+import { favoriteUserModel } from "../model/favoriteUser.model";
 
 export class CommentController implements ICommentController {
     async index(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -13,7 +15,10 @@ export class CommentController implements ICommentController {
             const user_id = (req as any).userId;
             console.log("Está en async index");
             const userData = await userModel.findById(user_id);
-            const allComments = await commentModel.find().populate("userId").populate("receiverId").sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
+            const allComments = await commentModel.find().populate("userId").populate("receiverId").sort({ createdAt: -1 }).skip(skip).limit(limit).lean().populate({
+                path: "repostOf",
+                populate: {path: "userId", select: "username"}
+            });
             const totalComments = await commentModel.countDocuments();
             const totalPages = Math.ceil(totalComments / limit);
             if (!userData || !allComments) {
@@ -22,7 +27,7 @@ export class CommentController implements ICommentController {
 
             res.render("index", { allComments, userData, currentPage: page, totalPages, errors: [], oldData: {} });
         } catch (err: any) {
-            console.error(err.message);
+            console.error("error index "+err.message);
             next(err);
         }
     }
@@ -51,7 +56,7 @@ export class CommentController implements ICommentController {
 
                         }).sort({ createdAt: -1 }).populate("userId").skip(skip).limit(limit).lean();
                         totalComments = await commentModel.countDocuments({
-                            $or: [{ userId: source, receiverId: source }, {userId: {$ne: source}, receiverId: source, hidden: false}]
+                            $or: [{ userId: source, receiverId: source }, { userId: { $ne: source }, receiverId: source, hidden: false }]
                         });
                         userData = await userModel.findById(source);
                     }
@@ -63,14 +68,18 @@ export class CommentController implements ICommentController {
                     res.render(view, { authUser: view != "index" ? authUser : null, allComments, userData, currentPage: page, totalPages, errors, oldData });
                     return;
                 } catch (err: any) {
+                    console.error(err.message);
                     next(err);
                 }
             }
             if (source === "index") {
                 await commentModel.create({ userId: (req as any).userId, receiverId: (req as any).userId, content });
+                await notificationModel.create({userId: (req as any).userId, receiverId: (req as any).userId, type: "new"});
             } else {
                 await commentModel.create({ userId: (req as any).userId, receiverId: source, content });
+                await notificationModel.create({userId: (req as any).userId, receiverId: source, type: "post on"});
             }
+
             res.redirect(view === "index" ? "/" : "/profile/" + source);
         } catch (err: any) {
             next(err);
@@ -115,7 +124,7 @@ export class CommentController implements ICommentController {
                 res.render("errors", { errors });
                 return;
             }
-            res.redirect(source === "index" ? "/" : "/profile/"+source);
+            res.redirect(source === "index" ? "/" : "/profile/" + source);
         } catch (err: any) {
             next(err);
         }
@@ -129,10 +138,13 @@ export class CommentController implements ICommentController {
             const limit = 10;
             const skip = (page - 1) * limit;
             const allComments = await commentModel.find({
-                $or: [{userId, receiverId: userId}, {userId: {$ne: userId}, receiverId: userId, hidden: false}]
-            }).skip(skip).limit(limit).lean().sort({ createdAt: -1 }).populate("userId").populate("receiverId");
+                $or: [{ userId, receiverId: userId }, { userId: { $ne: userId }, receiverId: userId, hidden: false }]
+            }).skip(skip).limit(limit).lean().sort({ createdAt: -1 }).populate("userId").populate("receiverId").populate({
+                path: "repostOf",
+                populate: {path: "userId", select: "username"}
+            });
             const totalComments = await commentModel.countDocuments({
-                $or: [{userId, receiverId: userId}, {userId: {$ne: userId}, receiverId: userId, hidden: false}]
+                $or: [{ userId, receiverId: userId }, { userId: { $ne: userId }, receiverId: userId, hidden: false }]
             });
             const totalPages = Math.ceil(totalComments / limit);
             res.render("profile", { authUser, allComments, userData, currentPage: page, totalPages, errors: [], oldData: {} });
@@ -157,7 +169,72 @@ export class CommentController implements ICommentController {
         try {
             const { source, commentId } = req.body;
             await commentModel.findByIdAndDelete(commentId);
-            res.redirect(source === "index" ? "/" : "/profile/"+source);
+            res.redirect(source === "index" ? "/" : "/profile/" + source);
+        } catch (err: any) {
+            next(err);
+        }
+    }
+    async getRepostButtonsText(req: Request, res: Response, next: NextFunction): Promise<any> {
+        try {
+const {commentId} = req.params; 
+const existingComment = await commentModel.findOne({userId: (req as any).userId, repostOf: commentId});
+let reposted = false;
+if (existingComment) {
+    reposted = true;
+}
+return res.status(200).json({reposted});
+        } catch (err: any) {
+            next(err);
+        }
+    }
+    async repost(req: Request, res: Response, next: NextFunction): Promise<any> {
+        try {
+            const { commentId, content } = req.body;
+            const existingComment = await commentModel.findOne({userId: (req as any).userId, repostOf: commentId});
+            let reposted; 
+            if (!existingComment) {
+                await commentModel.create({userId: (req as any).userId, receiverId: (req as any).userId, content, repostOf: commentId});
+                await notificationModel.create({userId: (req as any).userId, receiverId: (req as any).userId, repostOf: commentId, type: "repost"});
+                reposted = true;
+            } else {
+                await commentModel.findByIdAndDelete(existingComment._id);
+                await notificationModel.findOneAndDelete({userId: (req as any).userId, repostOf: commentId});
+                reposted = false;
+            }
+            return res.status(201).json({reposted});
+        } catch (err: any) {
+            next(err);
+        }
+    }
+    async getNotifications(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = 10;
+            const skip = (page - 1) * limit; 
+            const authUser = (req as any).userId;
+            const favorites = await favoriteUserModel.find({userId: authUser}).select("favoriteId");
+            const favoritesIds = favorites.map(favorite => (favorite.favoriteId)); 
+            const notifications = await notificationModel.find({
+                $or: [
+                    {type: "new",userId: {$ne: authUser, $in: favoritesIds}},
+                    {type: "repost", userId: {$ne: authUser, $in: favoritesIds}},
+                    {type: "post on", userId: {$ne: authUser, $in: favoritesIds}}, 
+                    {type: "favorite", userId: {$ne: authUser, $in: favoritesIds}}
+                ]
+            }).populate("userId").populate("receiverId").populate({
+                path: "repostOf",
+                populate: {path: "userId", select: "username"}
+            }).populate("favoriteId").lean().sort({createdAt: -1}).skip(skip).limit(limit);
+            const totalNotifications = await notificationModel.countDocuments({
+                $or: [
+                    {type: "new",userId: {$ne: authUser, $in: favoritesIds}},
+                    {type: "repost", userId: {$ne: authUser, $in: favoritesIds}},
+                    {type: "post on", userId: {$ne: authUser, $in: favoritesIds}}, 
+                    {type: "favorite", userId: {$ne: authUser, $in: favoritesIds}}
+                ]
+            });
+            const totalPages = Math.ceil(totalNotifications / limit); 
+            res.render("notifications", {notifications, currentPage: page, totalPages});
         } catch (err: any) {
             next(err);
         }

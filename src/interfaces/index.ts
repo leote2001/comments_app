@@ -15,6 +15,9 @@ export interface ICommentController {
     profile(req: Request, res: Response, next: NextFunction): Promise<void>;
     hidden(req: Request, res: Response, next: NextFunction): Promise<void>;
     delete(req: Request, res: Response, next: NextFunction): Promise<void>;
+    getRepostButtonsText(req: Request, res: Response, next: NextFunction): Promise<any>;
+    repost(req: Request, res: Response, next: NextFunction): Promise<any>;
+    getNotifications(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
 export interface ILikeController {
     getCommentsLikes(req: Request, res: Response, next: NextFunction): Promise<any>;

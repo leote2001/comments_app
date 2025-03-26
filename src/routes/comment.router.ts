@@ -18,3 +18,9 @@ commentRouter.get("/profile/:userId?", tokenMiddleware, commentController.profil
 commentRouter.post("/delete", tokenMiddleware, commentController.delete);
 // Hidden
 commentRouter.post("/hidden", tokenMiddleware, commentController.hidden);
+// Get repost buttons text
+commentRouter.get("/get-repost-btn-text/:commentId", tokenMiddleware, commentController.getRepostButtonsText);
+// Repost
+commentRouter.post("/repost", tokenMiddleware, commentController.repost);
+// Get notifications
+commentRouter.get("/notifications", tokenMiddleware, commentController.getNotifications);

@@ -29,6 +29,7 @@
                                     <a href="/">Home</a>
                                 </li>
                                 <li class="list-group-item"><a href="/profile/">My profile</a></li>
+                                <li class="list-group-item"><a href="/notifications">Notifications</a></li>
                                 <li class="list-group-item"><a href="/favorite/get-all/">My favorite users</a></li>
                                 <li class="list-group-item">
                                     <form action="/auth/logout" method="post" style="display:inline;">
@@ -43,9 +44,8 @@
                 <input type="hidden" name="source" id="source" value="<%= userData._id %>">
                 <h2>Create comment</h2>
                 <div class="mb-3">
-                    <textarea aria-describedby="commentAdvice" class="form-control" name="content"
-                        id="content"
-                        <% if (userData._id.toString() !== authUser.toString()) { %>
+                    <textarea aria-describedby="commentAdvice" class="form-control" name="content" id="content" <% if
+                        (userData._id.toString() !==authUser.toString()) { %>
                             placeholder="Post on <%= userData.username %>"
                         <%} else {%>
                             placeholder="Write something"
@@ -75,66 +75,84 @@
                                     <h3><a href="/profile/<%= comment.userId._id %>">
                                             <%= comment.userId.username %>
                                         </a></h3>
-                                    <% if (comment.userId._id.toString() !==authUser.toString()) { %>
-                                        <button data-favorite-id="<%= comment.userId._id %>"
-                                            class="btn btn-primary favoriteButton"></button>
-                                        <%}%>
-                                            <% if (comment.userId._id.toString() !==comment.receiverId._id.toString()) {
-                                                %>
-                                                <p>posted on</p>
-                                                <h4><a href="/profile/<%= comment.receiverId._id %>">
-                                                        <%= comment.receiverId.username %>
-                                                    </a></h4>
-                                                <% if (comment.receiverId._id.toString() !==authUser.toString()) { %>
-                                                    <button data-favorite-id="<%= comment.receiverId._id %>"
-                                                        class="btn btn-primary favoriteButton"></button>
-                                                    <%}%>
-                                                        <%}%>
-                                                            <p>
-                                                                <%= comment.content %>
-                                                            </p>
-                                                            <p>
-                                                                <%= comment.createdAt %>
-                                                            </p>
-                                                            <button class="btn btn-primary likeButton"
-                                                                data-comment-id="<%= comment._id %>"></button>
-                                                            <% if (comment.userId._id.toString()===authUser.toString())
-                                                                { %>
-                                                                <form action="/<%= comment._id %>/edit"
-                                                                    style="display: inline;">
-                                                                    <input type="hidden" name="source" id="source"
-                                                                        value="<%= userData._id %>">
-                                                                    <button class="btn btn-primary"
-                                                                        type="submit">Edit</button>
-                                                                </form>
-                                                                <form class="deleteForm" style="display:inline;">
-                                                                    <input type="hidden" name="commentId" id="commentId"
-                                                                        value="<%= comment._id %>">
-                                                                    <input type="hidden" name="source" id="source"
-                                                                        value="<%= userData._id %>">
-                                                                    <button class="btn btn-primary"
-                                                                        type="submit">Delete</button>
-                                                                </form>
+                                    
+                                        <% if (comment.userId._id.toString() !==authUser.toString()) { %>
+                                            <button data-favorite-id="<%= comment.userId._id %>"
+                                                class="btn btn-primary favoriteButton"></button>
+                                            <%}%>
+                                                <% if (comment.userId._id.toString()
+                                                    !==comment.receiverId._id.toString()) { %>
+                                                    <p>posted on</p>
+                                                    <h4><a href="/profile/<%= comment.receiverId._id %>">
+                                                            <%= comment.receiverId.username %>
+                                                        </a></h4>
+                                                    
+                                                        <% if (comment.receiverId._id.toString() !==authUser.toString())
+                                                            { %>
+                                                            <button data-favorite-id="<%= comment.receiverId._id %>"
+                                                                class="btn btn-primary favoriteButton"></button>
+                                                            <%}%>
+<%}%>
+<% if (comment.repostOf) { %>
+<p>reposted from</p>
+<h4><a href="/profile/<%= comment.repostOf.userId._id %>"><%= comment.repostOf.userId.username %></a></h4>
+<% if (comment.repostOf.userId._id.toString() !== authUser.toString()) { %>
+    <button data-favorite-id="<%= comment.repostOf.userId._id %>"
+        class="btn btn-primary favoriteButton"></button>
+<%}%>
+<%}%>
+                                                                <p>
+                                                                    <%= comment.content %>
+                                                                </p>
+                                                                <p>
+                                                                    <%= comment.createdAt %>
+                                                                </p>
+                                                                <button class="btn btn-primary likeButton"
+                                                                    data-comment-id="<%= comment._id %>"></button>
+                                                                <% if
+                                                                    (comment.userId._id.toString()===authUser.toString())
+                                                                    { %>
+                                                                        <% if (!comment.repostOf) { %>
+                                                                    <form action="/<%= comment._id %>/edit"
+                                                                        style="display: inline;">
+                                                                        <input type="hidden" name="source" id="source"
+                                                                            value="<%= userData._id %>">
+                                                                        <button class="btn btn-primary"
+                                                                            type="submit">Edit</button>
+                                                                    </form>
                                                                 <%}%>
-                                                                    <% if (comment.userId._id.toString()
-                                                                        !==comment.receiverId._id.toString() &&
-                                                                        comment.receiverId._id.toString()===authUser.toString())
-                                                                        { %>
-                                                                        <form class="hiddenForm"
-                                                                            style="display:inline;">
-                                                                            <input type="hidden" name="commentId"
-                                                                                id="commentId"
-                                                                                value="<%= comment._id %>">
-                                                                            <input type="hidden" name="profileId"
-                                                                                id="profileId"
-                                                                                value="<%= userData._id %>">
-                                                                            <button class="btn btn-primary"
-                                                                                type="submit">Hide</button>
-                                                                        </form>
-                                                                        <%}%>
+                                                                    <form class="deleteForm" style="display:inline;">
+                                                                        <input type="hidden" name="commentId"
+                                                                            id="commentId" value="<%= comment._id %>">
+                                                                        <input type="hidden" name="source" id="source"
+                                                                            value="<%= userData._id %>">
+                                                                        <button class="btn btn-primary"
+                                                                            type="submit">Delete</button>
+                                                                    </form>
+                                                                    <%}%>
+                                                                        <% if (comment.userId._id.toString()
+                                                                            !==comment.receiverId._id.toString() &&
+                                                                            comment.receiverId._id.toString()===authUser.toString())
+                                                                            { %>
+                                                                            <form class="hiddenForm"
+                                                                                style="display:inline;">
+                                                                                <input type="hidden" name="commentId"
+                                                                                    id="commentId"
+                                                                                    value="<%= comment._id %>">
+                                                                                <input type="hidden" name="profileId"
+                                                                                    id="profileId"
+                                                                                    value="<%= userData._id %>">
+                                                                                <button class="btn btn-primary"
+                                                                                    type="submit">Hide</button>
+                                                                            </form>
+                                                                            <%}%>
+                                                                            <% if (comment.userId._id.toString() !== authUser.toString() || comment.receiverId._id.toString() !== authUser.toString() && comment.repostOf && comment.repostOf.userId._id.toString() !== authUser.toString()) { %>
+                                                                                <button data-comment-id="<%= comment._id %>" data-content="<%= comment.content %>" class="btn btn-primary btnRepost"></button>
+                                                                            <%}%>
                                 </li>
                                 <% }) %>
                         </ul>
+                        
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
                                 <% if (currentPage> 1) { %>
@@ -164,7 +182,8 @@
                                 <button class="btn btn-primary" onclick="window.history.back()">Back</button>
         </main>
         <footer class="text-center text-muted">
-            <p>Developed by <a target="_blank" href="https://leosprogramador.portfolio-ls.online">Leonardo Sales (Leo S Programador)</a></p>
+            <p>Developed by <a target="_blank" href="https://leosprogramador.portfolio-ls.online">Leonardo Sales (Leo S
+                    Programador)</a></p>
             <p>Copyright &copy;2025</p>
         </footer>
     </div>
@@ -174,6 +193,7 @@
     <script src="/hidden.js"></script>
     <script src="/delete.js"></script>
     <script src="/commentLength.js"></script>
+    <script src="/repostBtnText.js"></script>
 </body>
 
 </html>

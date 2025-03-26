@@ -20,6 +20,10 @@ const commentSchema = new mongoose.Schema<Comment>({
     hidden: {
         type: Boolean, 
         default: false
+    },
+    repostOf: {
+        type: Schema.Types.ObjectId,
+        ref: "Comment"
     }
     },
     {timestamps: true}

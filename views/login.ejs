@@ -15,11 +15,11 @@
     <form action="/auth/login" method="post">
         <div class="mb-3">
             <label class="form-label" for="email">Email</label>
-            <input class="form-control" id="email" name="email" value="<%= oldData ? oldData.email : ''%>" type="email">
+            <input class="form-control" id="email" name="email" value="<%= oldData && oldData.email ? oldData.email : 'usuario_prueba@email.com'%>" type="email">
         </div>
         <div class="mb-3">
             <label class="form-label" for="password">Password</label>
-            <input class="form-control" id="password" name="password" type="password">
+            <input class="form-control" id="password" name="password" type="password" value="usuario_prueba">
         </div>
         <button class="btn btn-primary" type="submit">Login</button>
         <div class="mt-3 mb-3">

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { IFavoriteUserController } from "../interfaces";
 import { favoriteUserModel } from "../model/favoriteUser.model";
 import { userModel } from "../model/user.model";
+import { notificationModel } from "../model/notification.model";
 
 export class FavoriteUserController implements IFavoriteUserController {
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -42,9 +43,11 @@ export class FavoriteUserController implements IFavoriteUserController {
             let favorite;
             if (!existingFavorite) {
                 await favoriteUserModel.create({ userId: user_id, favoriteId });
+                await notificationModel.create({userId: user_id, receiverId: user_id, favoriteId, type: "favorite"});
                 favorite = true;
             } else {
                 await favoriteUserModel.deleteOne({ _id: existingFavorite._id });
+                await notificationModel.findOneAndDelete({userId: user_id, favoriteId});
                 favorite = false;
             }
             return res.status(201).json({ favorite });
