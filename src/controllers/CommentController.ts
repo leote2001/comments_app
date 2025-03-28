@@ -17,8 +17,9 @@ export class CommentController implements ICommentController {
             const userData = await userModel.findById(user_id);
             const allComments = await commentModel.find().populate("userId").populate("receiverId").sort({ createdAt: -1 }).skip(skip).limit(limit).lean().populate({
                 path: "repostOf",
-                populate: {path: "userId", select: "username"}
+                populate: [{path: "userId", select: "username"}, {path: "type"}] 
             });
+            
             const totalComments = await commentModel.countDocuments();
             const totalPages = Math.ceil(totalComments / limit);
             if (!userData || !allComments) {
@@ -75,7 +76,10 @@ export class CommentController implements ICommentController {
             if (source === "index") {
                 await commentModel.create({ userId: (req as any).userId, receiverId: (req as any).userId, content, type: "new" });
                 await notificationModel.create({userId: (req as any).userId, receiverId: (req as any).userId, type: "new"});
-            } else {
+            }  else if (source.toString() == authUser.toString()) {
+                await commentModel.create({userId: authUser, receiverId: authUser, content, type: "new"});
+                await notificationModel.create({userId: authUser, receiverId: authUser, type: "new"});
+                    }            else {
                 await commentModel.create({ userId: (req as any).userId, receiverId: source, content, type: "post on" });
                 await notificationModel.create({userId: (req as any).userId, receiverId: source, type: "post on"});
             }
@@ -141,7 +145,7 @@ export class CommentController implements ICommentController {
                 $or: [{ userId, receiverId: userId }, { userId: { $ne: userId }, receiverId: userId, hidden: false }]
             }).skip(skip).limit(limit).lean().sort({ createdAt: -1 }).populate("userId").populate("receiverId").populate({
                 path: "repostOf",
-                populate: {path: "userId", select: "username"}
+                populate: [{path: "userId", select: "username"}, {path: "type"}]
             });
             const totalComments = await commentModel.countDocuments({
                 $or: [{ userId, receiverId: userId }, { userId: { $ne: userId }, receiverId: userId, hidden: false }]
@@ -240,6 +244,19 @@ return res.status(200).json({reposted});
         }
     }
     async getCommentById(req: Request, res: Response, next: NextFunction): Promise<void> {
-
+try {
+const {commentId} = req.params;
+const authUser = (req as any).userId;
+const comment = await commentModel.findById(commentId).populate("userId").populate("receiverId").populate("repostOf").populate({
+    path: "repostOf",
+    populate: [{path: "userId", select: "username"}, {path: "type"}]
+});
+if (!comment) {
+    throw new Error("Comment not found");
+}
+res.render("comment", {comment, authUser});
+} catch (err: any) {
+    next(err);
+}
     }
 }

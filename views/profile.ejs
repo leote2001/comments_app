@@ -80,6 +80,9 @@
                                             <button data-favorite-id="<%= comment.userId._id %>"
                                                 class="btn btn-primary favoriteButton"></button>
                                             <%}%>
+                                            <% if (comment.type == "new") { %>
+<p><%= comment.content %></p>
+                                            <%}%>
                                                 <% if (comment.userId._id.toString()
                                                     !==comment.receiverId._id.toString()) { %>
                                                     <p>posted on</p>
@@ -92,18 +95,21 @@
                                                             <button data-favorite-id="<%= comment.receiverId._id %>"
                                                                 class="btn btn-primary favoriteButton"></button>
                                                             <%}%>
+                                                            <p><%= comment.content %></p>
 <%}%>
-<% if (comment.repostOf) { %>
+<% if (comment.type == "repost" && comment.repostOf) { %>
 <p>reposted from</p>
 <h4><a href="/profile/<%= comment.repostOf.userId._id %>"><%= comment.repostOf.userId.username %></a></h4>
-<% if (comment.repostOf.userId._id.toString() !== authUser.toString()) { %>
+<% if ( comment.repostOf && comment.repostOf.userId._id.toString() !== authUser.toString()) { %>
     <button data-favorite-id="<%= comment.repostOf.userId._id %>"
         class="btn btn-primary favoriteButton"></button>
 <%}%>
+<% if (comment.repostOf && comment.repostOf.type == "repost" || comment.repostOf.type == "post on") { %>
+<p><a href="/comment/<%= comment.repostOf._id %>">See comment</a></p>
+<% } else { %>
+<p><%= comment.repostOf.content %></p>
 <%}%>
-                                                                <p>
-                                                                    <%= comment.content %>
-                                                                </p>
+<%}%>
                                                                 <p>
                                                                     <%= comment.createdAt %>
                                                                 </p>
@@ -158,7 +164,7 @@
                                 <% if (currentPage> 1) { %>
                                     <li class="page-item">
                                         <a class="page-link"
-                                            href="/profile/<%= userdata._id %>?page=<%= currentPage - 1 %>">Previous</a>
+                                            href="/profile/<%= userData._id %>?page=<%= currentPage - 1 %>">Previous</a>
                                     </li>
                                     <%}%>
                                         <span><b>
@@ -171,7 +177,7 @@
                                         <% if (currentPage < totalPages) { %>
                                             <li class="page-item">
                                                 <a class="page-link"
-                                                    href="/profile/<%= userdata._id %>?page=<%= currentPage + 1 %>">Next</a>
+                                                    href="/profile/<%= userData._id %>?page=<%= currentPage + 1 %>">Next</a>
                                             </li>
                                             <%}%>
                             </ul>

@@ -31,7 +31,7 @@
                                                     notification.receiverId.username %>
                                         </a></li>
                                     <%}%>
-                                    <% if (notification.type === "repost") { %>
+                                    <% if (notification.type === "repost" && notification.repostOf) { %>
 <li class="list-group-item"><a href="/profile/<%= notification.userId._id %>"><%= notification.userId.username %> reposted from <%= notification.repostOf.userId.username %></a></li>
                                     <%}%>
                                     <% if (notification.type === "favorite") { %>

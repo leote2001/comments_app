@@ -13,7 +13,7 @@ export class FavoriteUserController implements IFavoriteUserController {
             const userId = req.params.userId || (req as any).userId;
             const authUser = (req as any).userId;
             const userData = await userModel.findById(userId);
-            const favoriteUsers = await favoriteUserModel.find({ userId }).populate("favoriteId").lean().skip(skip).limit(limit);
+            const favoriteUsers = await favoriteUserModel.find({ userId }).populate("favoriteId").lean().skip(skip).limit(limit).sort({createdAt: -1});
             const totalFavorites = await favoriteUserModel.countDocuments({userId});
             const totalPages = Math.ceil(totalFavorites / limit);
             res.render("favorites", { favoriteUsers, authUser, userData, currentPage: page, totalPages });
