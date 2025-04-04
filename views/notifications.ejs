@@ -20,22 +20,28 @@
             <% if (notifications.length> 0) { %>
                 <ul class="list-group">
                     <% notifications.forEach(notification=> { %>
+                        <% if (notification.type === "private") { %>
+<li class="list-group-item"><a target="_blank" href="/private-comments/<%= notification.receiverId._id %>"><%= notification.userId.username %> sent a private comment to you - <%= notification.createdAt %></a></li>
+                        <%}%>
+                        <% if (notification.type === "like") { %>
+<li class="list-group-item"><a href="/profile/"><%= notification.userId.username %> liked one of your comments - <%= notification.createdAt %></a></li>
+                        <%}%>
                         <% if (notification.type==="new" ) { %>
                             <li class="list-group-item"><a href="/profile/<%= notification.userId._id %>">
-                                    <%= notification.userId.username %> published a new comment
+                                    <%= notification.userId.username %> published a new comment - <%= notification.createdAt %>
                                 </a></li>
                             <%}%>
                                 <% if (notification.type==="post on" ) { %>
                                     <li class="list-group-item"><a href="/profile/<%= notification.receiverId._id %>">
                                             <%= notification.userId.username %> posted on <%=
-                                                    notification.receiverId.username %>
+                                                    notification.receiverId.username %> - <%= notification.createdAt %>
                                         </a></li>
                                     <%}%>
                                     <% if (notification.type === "repost" && notification.repostOf) { %>
-<li class="list-group-item"><a href="/profile/<%= notification.userId._id %>"><%= notification.userId.username %> reposted from <%= notification.repostOf.userId.username %></a></li>
+<li class="list-group-item"><a href="/profile/<%= notification.userId._id %>"><%= notification.userId.username %> reposted from <%= notification.repostOf.userId.username %> - <%= notification.createdAt %></a></li>
                                     <%}%>
                                     <% if (notification.type === "favorite") { %>
-<li class="list-group-item"><a href="/profile/<%= notification.userId._id %>"><%= notification.userId.username %> added <%= notification.favoriteId.username %> to favorite users</a></li>
+<li class="list-group-item"><a href="/profile/<%= notification.userId._id %>"><%= notification.userId.username %> added <%= notification.favoriteId.username %> to favorite users - <%= notification.createdAt %></a></li>
                                     <%}%>
                                         <%})%>
                 </ul>
@@ -63,6 +69,7 @@
             <p>Copyright &copy;2025</p>
         </footer>
     </div>
+    <script src="/searchScript.js"></script>
 </body>
 
 </html>

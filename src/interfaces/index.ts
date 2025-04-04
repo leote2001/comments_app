@@ -19,6 +19,12 @@ export interface ICommentController {
     repost(req: Request, res: Response, next: NextFunction): Promise<any>;
     getNotifications(req: Request, res: Response, next: NextFunction): Promise<void>;
     getCommentById(req: Request, res: Response, next: NextFunction): Promise<void>;
+    getPrivateComments(req: Request, res: Response, next: NextFunction): Promise<void>;
+    privateForm(req: Request, res: Response, next: NextFunction): Promise<void>;
+    sendPrivate(req: Request, res: Response, next: NextFunction): Promise<void>;
+    getPrivateCommentById(req: Request, res: Response, next: NextFunction): Promise<void>;
+    privateReplyForm(req: Request, res: Response, next: NextFunction): Promise<void>;
+    privateSuccess(req: Request, res: Response, next: NextFunction): void;
 }
 export interface ILikeController {
     getCommentsLikes(req: Request, res: Response, next: NextFunction): Promise<any>;

@@ -16,9 +16,15 @@
             <h1>
                 <%= userData.username %>
             </h1>
+            <% if (userData._id.toString() === authUser.toString()) { %>
+<div class="d-flex justify-content-center">
+<a target="_blank" href="/private-comments/<%= authUser %>">See private comments</a>
+</div>
+            <%}%>
             <% if (userData._id.toString() !==authUser.toString()) { %>
                 <div class="d-flex g-3">
                     <a href="/favorite/get-all/<%= userData._id %>">Favorite users</a>
+                    <a target="_blank" href="/private-form/<%= userData._id %>">Send private comment</a>
                     <button data-favorite-id="<%= userData._id %>" class="btn btn-primary favoriteButton"></button>
                 </div>
                 <%}%>

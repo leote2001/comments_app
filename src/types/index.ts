@@ -25,6 +25,7 @@ export type Like = {
 export type FavoriteUser = {
     userId: Schema.Types.ObjectId;
     favoriteId: Schema.Types.ObjectId;
+    createdAt: Date;
 }
 
 export type Notification = {
@@ -34,4 +35,12 @@ export type Notification = {
     createdAt: Date;
     type: string;
     favoriteId: Schema.Types.ObjectId;
+    commentId: Schema.Types.ObjectId;
+}
+
+export type PrivateComment = {
+    userId: Schema.Types.ObjectId;
+    receiverId: Schema.Types.ObjectId;
+    content: string;
+    title: string;
 }

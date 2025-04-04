@@ -3,13 +3,11 @@ import { Notification } from "../types";
 const notificationSchema = new mongoose.Schema<Notification>({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        ref: "User"
     },
     receiverId: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: true
     },
     repostOf: {
         type: Schema.Types.ObjectId,
@@ -18,13 +16,21 @@ const notificationSchema = new mongoose.Schema<Notification>({
     },
     type: {
         type: String,
-        enum: ["new", "post on", "repost", "favorite"],
+        enum: ["new", "post on", "repost", "favorite", "like", "private"],
         required: true
     },
     favoriteId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         default: null
+    },
+    commentId: {
+        type: Schema.Types.ObjectId,
+        ref: "Comment"
+    },
+    createdAt: {
+        type: Date,
+default: Date.now
     }
 },
 {

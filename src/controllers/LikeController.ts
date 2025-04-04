@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { likeModel } from "../model/likeModel";
 import { ILikeController } from "../interfaces";
+import { notificationModel } from "../model/notification.model";
 
 export class LikeController implements ILikeController {
     async getCommentsLikes(req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -24,10 +25,12 @@ export class LikeController implements ILikeController {
             let commentLikes;
             if (!existingCommentLike) {
                 await likeModel.create({ userId: user_id, commentId });
+                await notificationModel.create({userId: user_id,commentId, type: "like"});
                 commentLikes = await likeModel.countDocuments({ commentId });
                 like = true;
             } else {
                 await likeModel.deleteOne({ _id: existingCommentLike._id });
+                await notificationModel.findOneAndDelete({userId: user_id, commentId});
                 commentLikes = await likeModel.countDocuments({ commentId });
                 like = false;
             }

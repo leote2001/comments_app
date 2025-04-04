@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Comments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container text-center">
+        <header class="text-center">
+            <h1>Private Comments</h1>
+            <%- include("./partials/search") %>
+                <%- include("./partials/navBar") %>
+        </header>
+        <main>
+            <% if (allComments.length > 0) { %>
+            <table>
+                <thead>
+<tr>
+    <th>From</th>
+    <th>Title</th>
+    <th>Date</th>
+    <th>Actions</th>
+</tr>
+                </thead>
+                <tbody>
+                    <% allComments.forEach(comment => { %>
+<tr>
+    <td><a href="/profile/<%= comment.userId._id %>"><%= comment.userId.username %></a></td>
+    <td><a href="/private-comment/<%= comment._id %>"><%= comment.title %></a></td>
+    <td><%= comment.createdAt %></td>
+    <td><form style="display:inline;" class="deleteForm">
+        <input type="hidden" name="source" id="source" value="private">
+        <input type="hidden" name="commentId" id="commentId" value="<%= comment._id %>">
+        <button class="btn btn-primary" type="submit">Delete</button>
+    </form></td>
+</tr>
+                    <%})%> 
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation">
+<ul class="pagination">
+<% if (currentPage > 1) { %>
+<li class="page-item"><a class="page-link" href="/private-comments/<%= authUser %>?page=<%= currentPage - 1 %>">Previous</a></li>
+<%}%>
+<span><b><%= currentPage %></b></span>
+-
+<span><b><%= totalPages %></b></span>
+<% if (currentPage < totalPages) { %>
+<li class="page-item"><a class="page-link" href="/private-comments/<%= authUser %>?page=<%= currentPage + 1 %>">Next</a></li>
+<%}%>
+</ul>
+            </nav>
+            <% } else { %>
+<p class="lead">No comments</p>
+            <%}%>
+            <button onclick="window.history.back()" class="btn btn-primary">Back</button>
+        </main>
+        <footer class="text-center text-muted">
+            <p>Developed by <a target="_blank" href="https://leosprogramador.portfolio-ls.online">Leonardo Sales (Leo S
+                    Programador)</a></p>
+            <p>Copyright &copy;2025</p>
+        </footer>
+    </div>
+    <script src="/searchScript.js"></script>
+    <script src="/delete.js"></script>
+</body>
+
+</html>
